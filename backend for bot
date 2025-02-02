@@ -1,0 +1,35 @@
+from flask import Flask, request, jsonify
+import openai
+
+app = Flask(__name__)
+
+# Configure OpenAI API Key
+openai.api_key = "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"
+
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    data = request.json
+    user_input = data.get("message", "")
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": user_input}]
+        )
+        bot_response = response['choices'][0]['message']['content']
+        return jsonify({"response": bot_response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/image', methods=['POST'])
+def image_search():
+    file = request.files.get('image')
+    if file:
+        try:
+           
+            return jsonify({"response": "Image search functionality is coming soon!"})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    return jsonify({"error": "No image provided"}), 400
+
+if __name__ == "__main__":
+    app.run(debug=True)
